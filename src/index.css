@@ -1,0 +1,76 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body{
+  height: 100%;
+}
+footer{
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+}
+/* src/index.css (or BlogPostCard.css) */
+
+.blog-post-card.expanded {
+  height: auto; /* Allow card to expand to full content height */
+  box-shadow: 0 12px 18px rgba(0, 0, 0, 0.3); /* More pronounced shadow when expanded */
+}
+
+.blog-post-card:hover {
+  background-color: #f5f5f5; /* Lighter background on hover */
+  border: 1px solid #f5f5f5; /* Lighter border on hover */
+  cursor: pointer;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3); /* Adjusted shadow on hover */
+  transition: all 0.3s ease;
+}
+
+.transition-max-h-500 {
+  transition: max-height 0.5s ease-in-out; /* Transition for max-height property */
+}
+
+.max-h-24 {
+  max-height: 6rem; /* Tailwind unit for max-height when collapsed */
+}
+
+.max-h-500 {
+  max-height: 32rem; /* Tailwind unit for max-height when expanded - adjust as needed */
+}
+
+
+@media only screen and (max-width: 768px) {
+  .blog-post-card {
+      padding: 15px;
+      height: auto; /* Ensure card height adjusts based on content */
+  }
+}
+/* src/index.css (or CoachingPage.css) */
+
+.button-column-button {
+  margin-bottom: 10px;
+  padding: 12px 60px; /* Adjusted padding for better button size */
+  width: 100%; /* Full width within parent */
+  max-width: 700px; /* Max width to prevent buttons from stretching too wide */
+  height: auto;
+  font-size: 1.1rem; /* Slightly larger font size */
+  font-family: 'Roboto', sans-serif; /* Use a readable font (adjust if needed) */
+  background-color: #3a3b3c;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  text-align: center; /* Ensure text is centered in button */
+  display: block; /* Make anchor tags behave like block elements for button styling */
+}
+
+.button-column-button:hover {
+  background-color: #a293a8; /* Hover color from your style.css */
+}
+
+@media screen and (max-width: 768px) {
+  .button-column-button {
+      padding: 10px 40px; /* Adjust padding for smaller screens */
+      font-size: 1rem; /* Adjust font size for smaller screens */
+  }
+}
