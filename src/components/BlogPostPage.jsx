@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import BlogPostCard from "./BlogPostCard"; // Import BlogPostCard component
 import BlogModal from "./BlogModal"; // Import BlogModal component
 import BlogViewer from "../components/BlogViewer";
+
 function BlogPostPage() {
   const [selectedBlog, setSelectedBlog] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -213,35 +214,43 @@ function BlogPostPage() {
           <p>It easy to see it is smooth and differentiable and bound between 0 and 1 [No? not straight forward - need to fix this].<p><br>
 
           <p><strong>Derivative</strong><p>
-          <p>The derivative of logistic function \\(\\sigma\\) is simply:</p>
+          <p>The derivative of logistic function [\\(\\sigma\\)] is simply:</p>
 
-          <p>(A)
-d
-d
-x
-σ
-(
-x
-)
-=
-σ
-(
-x
-)
-(
-1
-−
-σ
-(
-x
-)
-)</p>
+          <p>
+           \\(\\frac{d}{dx} \\sigma (x) = \\sigma (x) ( 1-\\sigma (x)) \\)   
+          </p>
 
 
-          <p>From where this comes ? read on:.</p>
-          <p>$$ \begin{align}</p>
+          <br>
+          <p>From where this comes? read on:</p>
+          <p>\\(\\frac{d}{dx} \\sigma (x) = \\frac{d}{dx} \\big[ \\frac{1}{1+e^{-x}} \\big]  \\)   </p>
+          <p>\\( = \\frac{d}{dx} (1+e^{-x})^{-1} \\)</p>
+          <p>\\( = -(1+e^{-x})^{-2}(-e^{-x}) \\)</p>
+          <p>\\( = \\frac{e^{-x}}{(1+e^{-x})^2} \\)</p>
+          <p>\\( = \\frac{1}{(1+e^{-x})} \\cdot \\frac{e^{-x}}{(1+e^{-x})} \\)</p>
+          <p>\\( = \\frac{1}{(1+e^{-x})} \\cdot \\frac{(1 + e^{-x} -1)}{(1+e^{-x})} \\)</p>
 
-<p>\frac{d}{dx}\sigma(x) &= \frac{d}{dx} \big[ \frac{1}{1+e^{-x}}\big] \label{refB} \tag{B}\</p>
+
+          <BlockMath math={String.raw
+          '\begin{aligned}
+          \frac{d}{dx} \sigma(x) &= \frac{d}{dx} \left[ \frac{1}{1+e^{-x}} \right] \\
+          &= \frac{d}{dx} (1+e^{-x})^{-1} \\
+          &= -(1+e^{-x})^{-2}(-e^{-x}) \\
+          &= \frac{e^{-x}}{(1+e^{-x})^2} \\
+          &= \frac{1}{(1+e^{-x})} \cdot \frac{e^{-x}}{(1+e^{-x})} \\
+          &= \frac{1}{(1+e^{-x})} \cdot \frac{(1 + e^{-x} -1)}{(1+e^{-x})}
+          \end{aligned}'
+          } />
+
+
+
+
+          <p>\\(\\frac{d}{dx}  \\sigma (x) &= \\frac{d}{dx} \\big[ \\frac{1}{1+e^{-x}} \\big] \\label{refB} \\tag{B} \\)</p>
+
+
+
+          /* <p>\\( \\begin{align} \\)</p> */
+
 
 <p>&= \frac{d}{dx} (1+e^{-x})^{-1} \</p>
 
@@ -257,7 +266,7 @@ x
 
 <p>&= \sigma(x)(1-\sigma(x)) \label{refC} \tag{C}</p>
 
-<p>\end{align} $$</p>
+/* <p>\\( \\end{align} \\)</p> */
 
 <p>likewise,</p>
 
