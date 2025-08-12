@@ -191,132 +191,70 @@ function BlogPostPage() {
       excerpt:
         "Training neural nets is all about computing gradients. In case you are new to this idea, refer to this awesome post by Andrej Karpathy. Briefly, deep down every ML problem is an optimization problem....",
       content: `
-        <h2><strong>Introduction</strong></h2>
-          <p>Training neural nets is all about <a href="http://deeplearning.stanford.edu/wiki/index.php/Deriving_gradients_using_the_backpropagation_idea" target="_blank" style="color: blue; text-decoration: underline;">computing gradients</a>. In case you are new to this idea, refer to this awesome <a href="http://karpathy.github.io/neuralnets/" target="_blank" style="color: blue; text-decoration: underline;">post</a> by Andrej Karpathy.</p>
-          <p>Briefly, deep down every ML problem is an optimization problem. We want to "learn" (find) the weights which will result in least average loss. The way we do it is - start with arbitrary weights and keep adjusting them in small quantities until we get them right i.e. arrive at a set of values for which loss function has least value. Gradients tell us by how much should we adjust each of the weights. Not clear? Check this <a href="https://www.youtube.com/watch?v=yFPLyDwVifc" target="_blank" style="color: blue; text-decoration: underline;">video</a> by Andrew NG and this <a href="http://www.offconvex.org/2016/12/20/backprop/" target="_blank" style="color: blue; text-decoration: underline;">blog</a> by Sanjeev Arora.</p>
-          <br>
+  <h2><strong>Introduction</strong></h2>
+  <p>Training neural nets is all about <a href="http://deeplearning.stanford.edu/wiki/index.php/Deriving_gradients_using_the_backpropagation_idea" target="_blank" style="color: blue; text-decoration: underline;">computing gradients</a>. In case you are new to this idea, refer to this awesome <a href="http://karpathy.github.io/neuralnets/" target="_blank" style="color: blue; text-decoration: underline;">post</a> by Andrej Karpathy.</p>
+  
+  <p>Briefly, deep down every ML problem is an optimization problem. We want to "learn" (find) the weights which will result in least average loss. The way we do it is - start with arbitrary weights and keep adjusting them in small quantities until we get them right i.e. arrive at a set of values for which loss function has least value. Gradients tell us by how much should we adjust each of the weights. Not clear? Check this <a href="https://www.youtube.com/watch?v=yFPLyDwVifc" target="_blank" style="color: blue; text-decoration: underline;">video</a> by Andrew NG and this <a href="http://www.offconvex.org/2016/12/20/backprop/" target="_blank" style="color: blue; text-decoration: underline;">blog</a> by Sanjeev Arora.</p>
 
-          <p>In this post we will focus on the maths that goes into computing these gradients - we will systematically derive gradients. The complexity of calculations depends on 3 things:</p><br>
-          <ul>
-            <li>1. Depth of the network</li>
-            <li>2. Number of training examples (1 or more)</li>
-            <li>3. Number of components in input (1=scalar, &gt;1=vector)</li><br>
-          </ul>
-          <p> Through out this post we assume:</p><br>
-          <ul>
-            <li>1. No bias term.</li>
-            <li>2. \.\ is matrix multiplication, \*\ is element wise product, \X\ is scalar multiplication.</li>
-            <li>3. All activations are <a href="https://www.quora.com/What-is-the-sigmoid-function-and-what-is-its-use-in-machine-learnings-neural-networks" target="_blank" style="color: blue; text-decoration: underline;">sigmoid a.k.a logistic</a>. It is defined as \\( f(u) = \\frac{1}{1 + e^{-u}} \\). If you plot it, it comes as:</li>
-          </ul>
+  <p>In this post we will focus on the maths that goes into computing these gradients - we will systematically derive gradients. The complexity of calculations depends on 3 things:</p>
+  
+  <ul>
+    <li>1. Depth of the network</li>
+    <li>2. Number of training examples (1 or more)</li>
+    <li>3. Number of components in input (1=scalar, >1=vector)</li>
+  </ul>
+  
+  <p>Through out this post we assume:</p>
+  
+  <ul>
+    <li>1. No bias term.</li>
+    <li>2. \\(\\cdot\\) is matrix multiplication, \\(*\\) is element wise product, \\(\\times\\) is scalar multiplication.</li>
+    <li>3. All activations are <a href="https://www.quora.com/What-is-the-sigmoid-function-and-what-is-its-use-in-machine-learnings-neural-networks" target="_blank" style="color: blue; text-decoration: underline;">sigmoid a.k.a logistic</a>. It is defined as \\(f(u) = \\frac{1}{1 + e^{-u}}\\). If you plot it, it comes as:</li>
+  </ul>
 
-          <img src="/images/logistic.png" height="200" width="270" alt="Sigmoid function"/>
-          <div class="thecap">Sigmoid function</div>
-          <p>It easy to see it is smooth and differentiable and bound between 0 and 1 [No? not straight forward - need to fix this].<p><br>
+  <img src="/images/logistic.png" height="200" width="270" alt="Sigmoid function"/>
+  <div class="thecap">Sigmoid function</div>
+  
+  <p>It is easy to see it is smooth and differentiable and bound between 0 and 1.</p>
 
-          <p><strong>Derivative</strong><p>
-          <p>The derivative of logistic function [\\(\\sigma\\)] is simply:</p>
+  <p><strong>Derivative</strong></p>
+  <p>The derivative of logistic function \\(\\sigma\\) is simply:</p>
 
-          <p>
-           \\(\\frac{d}{dx} \\sigma (x) = \\sigma (x) ( 1-\\sigma (x)) \\)   
-          </p>
+  $$\\frac{d}{dx} \\sigma (x) = \\sigma (x) ( 1-\\sigma (x))$$
 
+  <p>From where this comes? read on:</p>
 
-          <br>
-          <p>From where this comes? read on:</p>
-          <p>\\(\\frac{d}{dx} \\sigma (x) = \\frac{d}{dx} \\big[ \\frac{1}{1+e^{-x}} \\big]  \\)   </p>
-          <p>\\( = \\frac{d}{dx} (1+e^{-x})^{-1} \\)</p>
-          <p>\\( = -(1+e^{-x})^{-2}(-e^{-x}) \\)</p>
-          <p>\\( = \\frac{e^{-x}}{(1+e^{-x})^2} \\)</p>
-          <p>\\( = \\frac{1}{(1+e^{-x})} \\cdot \\frac{e^{-x}}{(1+e^{-x})} \\)</p>
-          <p>\\( = \\frac{1}{(1+e^{-x})} \\cdot \\frac{(1 + e^{-x} -1)}{(1+e^{-x})} \\)</p>
+  $$\\begin{align}
+  \\frac{d}{dx} \\sigma(x) &= \\frac{d}{dx} \\left[ \\frac{1}{1+e^{-x}} \\right] \\\\
+  &= \\frac{d}{dx} (1+e^{-x})^{-1} \\\\
+  &= -(1+e^{-x})^{-2}(-e^{-x}) \\\\
+  &= \\frac{e^{-x}}{(1+e^{-x})^2} \\\\
+  &= \\frac{1}{(1+e^{-x})} \\cdot \\frac{e^{-x}}{(1+e^{-x})} \\\\
+  &= \\frac{1}{(1+e^{-x})} \\cdot \\frac{(1 + e^{-x} -1)}{(1+e^{-x})} \\\\
+  &= \\frac{1}{(1+e^{-x})} \\cdot \\left( 1 - \\frac{1}{(1+e^{-x})} \\right) \\\\
+  &= \\sigma(x)(1-\\sigma(x))
+  \\end{align}$$
 
+  <p>likewise,</p>
 
-          <BlockMath math={String.raw
-          '\begin{aligned}
-          \frac{d}{dx} \sigma(x) &= \frac{d}{dx} \left[ \frac{1}{1+e^{-x}} \right] \\
-          &= \frac{d}{dx} (1+e^{-x})^{-1} \\
-          &= -(1+e^{-x})^{-2}(-e^{-x}) \\
-          &= \frac{e^{-x}}{(1+e^{-x})^2} \\
-          &= \frac{1}{(1+e^{-x})} \cdot \frac{e^{-x}}{(1+e^{-x})} \\
-          &= \frac{1}{(1+e^{-x})} \cdot \frac{(1 + e^{-x} -1)}{(1+e^{-x})}
-          \end{aligned}'
-          } />
+  $$\\frac{d}{dx}\\sigma(ax) = a(\\sigma(ax))(1-\\sigma(ax))$$
 
+  <p>We will be using the above result a lot, so make sure you understand it. If it is not clear, have a look at this <a href="http://kawahara.ca/how-to-compute-the-derivative-of-a-sigmoid-function-fully-worked-example/" target="_blank" style="color: blue; text-decoration: underline;">post</a>.</p>
 
+  <p>To compute the gradients, we will start with the simplest case and increase the complexity gradually. To keep things simple we will complete it in 7 parts</p>
 
+  <ol start="1">
+    <li><a href="https://github.com/anujgupta82/anujgupta82.github.io_old/blob/master/_posts/2016-08-26-gradients-1.markdown" style="color: blue; text-decoration: underline;">1 layer network, 1 training example (scalar)</a></li>
+    <li><a href="https://anujgupta82.github.io/2016/08/28/gradients-2/" style="color: blue; text-decoration: underline;">1 layer network, 1 training example (vector)</a></li>
+    <li><a href="https://anujgupta82.github.io/2016/08/30/gradients-3/" style="color: blue; text-decoration: underline;">1 layer network, batch training (>1 training examples where each is a vector)</a></li>
+    <li><a href="https://anujgupta82.github.io/2016/09/04/gradients-4-1/" style="color: blue; text-decoration: underline;">2 layer network with 1 node hidden layer, 1 training example (vector)</a></li>
+    <li><a href="https://anujgupta82.github.io/2016/09/11/gradients-4-2/" style="color: blue; text-decoration: underline;">2 layer network with 2 node hidden layer, 1 training example (vector)</a></li>
+    <li><a href="https://anujgupta82.github.io/2016/09/11/gradients-4-2/" style="color: blue; text-decoration: underline;">2 layer network, batch training (>1 training examples where each is a vector)</a></li>
+    <li><a href="https://anujgupta82.github.io/2016/09/11/gradients-4-2/" style="color: blue; text-decoration: underline;">Generalization and take home</a></li>
+  </ol>
 
-          <p>\\(\\frac{d}{dx}  \\sigma (x) &= \\frac{d}{dx} \\big[ \\frac{1}{1+e^{-x}} \\big] \\label{refB} \\tag{B} \\)</p>
-
-
-
-          /* <p>\\( \\begin{align} \\)</p> */
-
-
-<p>&= \frac{d}{dx} (1+e^{-x})^{-1} \</p>
-
-<p>&= -(1+e^{-x})^{-2}(-e^{-x}) \</p>
-
-<p>&= \frac{e^{-x}}{(1+e^{-x})^2} \</p>
-
-<p>&= \frac{1}{(1+e^{-x})} . \frac{e^{-x}}{(1+e^{-x})} \</p>
-
-<p>&= \frac{1}{(1+e^{-x})} . \frac{1 + e^{-x} -1}{(1+e^{-x})} \</p>
-
-<p>&= \frac{1}{(1+e^{-x})} . \big( 1 - \frac{e^{-x}}{(1+e^{-x})} \big) \</p>
-
-<p>&= \sigma(x)(1-\sigma(x)) \label{refC} \tag{C}</p>
-
-/* <p>\\( \\end{align} \\)</p> */
-
-<p>likewise,</p>
-
-<p>(D)
-d
-d
-x
-σ
-(
-a
-x
-)
-=
-a
-(
-σ
-(
-a
-x
-)
-)
-(
-1
-−
-σ
-(
-a
-x
-)
-)<p/>
-
-   <p>We will be using the above result a lot, so make sure you understand it. If it is not clear, have a look at this<a href="http://kawahara.ca/how-to-compute-the-derivative-of-a-sigmoid-function-fully-worked-example/" target="_blank" style="color: blue; text-decoration: underline;"> post</a>.</p>
-
-
-          <p>To compute the gradients, we will start with the simplest case and increase the complexity gradually. To keep things simple we will complete it in 7 parts</p>
-
-         <ol start="1">
-            <li><a href="https://github.com/anujgupta82/anujgupta82.github.io_old/blob/master/_posts/2016-08-26-gradients-1.markdown" style="color: blue; text-decoration: underline;"> layer network, 1 training example (scalar)</a></li>
-            <li><a href="https://anujgupta82.github.io/2016/08/28/gradients-2/" style="color: blue; text-decoration: underline;">1 layer network, 1 training example (vector)</a></li>
-            <li><a href="https://anujgupta82.github.io/2016/08/30/gradients-3/" style="color: blue; text-decoration: underline;">1 layer network, batch training (>1 training examples where each is a vector)</a></li>
-            <li><a href="https://anujgupta82.github.io/2016/09/04/gradients-4-1/" style="color: blue; text-decoration: underline;">2 layer network with 1 node hidden layer, 1 training example (vector)</a></li>
-            <li><a href="https://anujgupta82.github.io/2016/09/11/gradients-4-2/" style="color: blue; text-decoration: underline;">2 layer network with 2 node hidden layer, 1 training example (vector)</a></li>
-            <li><a href="https://anujgupta82.github.io/2016/09/11/gradients-4-2/" style="color: blue; text-decoration: underline;">2 layer network, batch training (>1 training examples where each is a vector)</a></li>
-            <li><a href="https://anujgupta82.github.io/2016/09/11/gradients-4-2/" style="color: blue; text-decoration: underline;">Generalization and take home</a></li>
-          </ol>
-          <br>
-
-
-          <a href="https://anujgupta82.github.io/2016/08/26/gradients-1/" class="btn btn-primary" style="color: blue;">Next</a>
-      `,
+  <a href="https://anujgupta82.github.io/2016/08/26/gradients-1/" class="btn btn-primary" style="color: blue;">Next</a>
+`,
     },
     {
       id: 2,
