@@ -257,270 +257,114 @@ function BlogPostPage() {
 `,
     },
     {
-      id: 2,
-      title: "Gradients - Part 1",
-      date: "Aug 26, 2016",
-      excerpt:
-        "Part 1 of computing gradients for training Neural Nets",
-      content: `
-      <h2><strong> 1 layer network, 1 training example (scalar)</strong></h2>
-      <br>
-      <p>Consider a simplest version of a neural net - 1 layer, 1 input node (scalar)</p>
-      <img src="/images/NN_1_1.jpeg" height="200" width="270" alt="Neural Netwrok diagram"/>
-      <p>simple neural net
-Input is (x,y) : x, y both are scalars. (Later on every thing will be a matrix, so just to be using same notaion. We will abuse the notation to express scalars as matrix of dimension 1 \(\times\) 1). Thus, in matrix form x,y are $$[X]{\scriptscriptstyle 1\times 1}$$ and $$[y]{\scriptscriptstyle 1\times 1}$$. Let W be weight matrix. In this case its 
-[
-W
-]
-1
-×
-1</p>
+    // ...existing code...
+  "id": 2,
+  "title": "Gradients - Part 1",
+  "date": "2016-08-26",
+  "image": "images/gradient-diagram.jpg",
+  "content": `
+Consider a simplest version of a neural net - 1 layer, 1 input node (scalar).
 
-<p>Let \( \hat{y} \) be the predicted output. Then, $$ \hat{y} = \sigma (Wx) = \frac{1}{1 + e^{-[X] . [W]}} \label{ref0} \tag{0}$$
+![Neural Net Diagram](images/gradient-diagram.jpg)
 
-Let loss be squared error loss. For ease of maths we take \( \frac{1}{2} \) of it. $$ L = \frac{1}{2} (y - \hat{y})^{2} $$
+Input is $(x, y)$: $x, y$ both are scalars. (Later on everything will be a matrix, so just to be using same notation. We will abuse the notation to express scalars as matrix of dimension $1 \\times 1$). In matrix form $x, y$ are $[X]_{1 \\times 1}$ and $[y]_{1 \\times 1}$. Let $W$ be weight matrix. In this case its $[W]_{1 \\times 1}$.
 
-Let's compute gradients, 
-∇
-W
-L
-=
-∂
-L
-∂
-W</p>
-<br>
-<p>$$
-\begin{align}
-\frac{\partial L}{\partial W} & = \frac{\partial L}{\partial \hat{y}} \times \frac{\partial \hat{y}}{\partial W} \label{ref1} \tag{1}\\
-\frac{\partial L}{\partial \hat{y}} &= \frac{1}{2} \times 2 \times (y - \hat{y})^{1} \times (-1) \label{ref2} \tag{2}\\
-\frac{\partial \hat{y}}{\partial W} &= \big{(} \frac{1}{1 + e^{-[X] . [W]}} \big{)} \times \big{(}1- \frac{1}{1 + e^{-[X] . [W]}} \big{)} * X \dots && \text{using [Eq C, Part-0]} \label{ref3} \tag{3}\\
-& = \sigma (Wx) \times (1- \sigma (Wx)) * X \dots && \text{using \eqref{ref0}} \\
-& = \hat{y} \times (1 - \hat{y}) * X \dots && \text{using \eqref{ref0}} \label{ref33}\\
-\end{align}
-$$</p><br>
-
-<p>Substituting \eqref{ref2} & \eqref{ref3} in \eqref{ref1}, we get</p>
-<br>
-<p>$$
-\begin{align}
-\frac{\partial L}{\partial W} &= \big{(} (-1) \times (y - \hat{y}) \big{)} \times \big{(} \hat{y} \times (1- \hat{y}) \times x \big{)}\ \\
-&= -(y - \hat{y}) \times \hat{y} \times (1- \hat{y}) \times x \\
-&= (\hat{y} - y) \times \hat{y} \times (1- \hat{y}) \times x \label{ref4} \tag{4} \\
-\end{align}
-$$</p><br>
-<p>Let,
-
-\begin{align} \Delta l_{1} = (\hat{y} - y) \times \hat{y} \times (1- \hat{y}) \label{ref5} \tag{5} \ \end{align}
-
-Then, eq \eqref{ref4} reduces to: $$ \begin{align} \frac{\partial L}{\partial W} &= \Delta l_{1} \times x \ & = \Delta l_{1} * X \ & = [X^{T}] . \Delta l_{1} \label{ref6} \tag{6} \ \end{align} $$</p>
-<a href="https://anujgupta82.github.io/2016/08/26/gradients-0/" class="btn btn-primary" style="color: blue;">Prev</a>
-<a href="https://anujgupta82.github.io/2016/08/26/gradients-1/" class="btn btn-primary" style="color: blue;">Next</a>
-      
-      `
-    },
-    {
-      id: 3,
-      title: "Gradients - Part 2",
-      date: "Aug 28, 2016",
-      excerpt:
-        "Part 2 of computing gradients for training Neural Nets",
-      content: `
-      <h2><strong>1 layer network, 1 input (vector)</strong></h2>
-      <br>
-      <p>Our neural net still has 1 layer, but now the input is a vector.</P>
-      <img src="assets/gradients/NN_2_2.jpeg" height="200" width="270" alt="Neural Netwrok diagram"/>
-      <p>
-Neural net with 1 layer, but input is vector</p>
-<p>Input is \((\vec{X},y)\) : \(\vec{X}\) is a vector, while y is a scalar.</p><br>
-<p>\(X = [x^1 ~~x^2 ~~x^3]\)       \(x^i = i^{th}\) component of \(\vec{X}\).</p><br>
-<p>Thus, in matrix form x,y are $$[X]{\scriptscriptstyle 1\times 3}$$ and $$[y]{\scriptscriptstyle 1\times 1}$$. W, weight matrix is 
-[
-W
-]
-3
-×
-1
-
-</p><br>
-<p>W
-=
-[
-w
-1
-w
-2
-w
-3
-]</p><br>
-
-<p>Let \( \hat{y} \) be predicted output. In matrix format, \([\hat{y}]_{\scriptscriptstyle 1\times 1}\)</p><br>
-
-<p>$$
-\begin{align}
-\hat{y} & = \sigma ([X] . [W]) \label{ref101} \tag{10.1} \\
-& = \frac{1}{1 + e^{-[X] . [W]}} \label{ref102} \tag{10.2} \\
-& = \frac{1}{1 + e^{-(x^1 w_1 + x^2 w_2 + x^3 w_3)}} \label{ref103} \tag{10.3} \\
-\end{align}
-$$</p><br>
-
-<p>Like before, we will use half of squared error loss. $$ L = \frac{1}{2} (y - \hat{y})^{2} $$
-
-Let's first compute gradients.<p><br>
-
-<p>$$
-\begin{equation}
-\nabla_{W} L = \frac{\partial L}{\partial W} \\
-\nabla_{W} L = \begin{bmatrix}
-\frac{\partial L}{\partial w_{1}} \\
-\frac{\partial L}{\partial w_{2}} \\
-\frac{\partial L}{\partial w_{3}} \\
-\end{bmatrix}
-\label{ref11} \tag{11}
-\end{equation}
-$$</p><br>
-<p>So, lets compute \( \frac{\partial L}{\partial w_{1}} \)</p><br>
-
-<p>$$
-\begin{align}
-\frac{\partial L}{\partial w_1} &= \frac{\partial L}{\partial \hat{y}} * \frac{\partial \hat{y}}{\partial w_1} \label{ref12} \tag{12} \\
-\frac{\partial L}{\partial \hat{y}} &= \frac{1}{2} \times 2 \times (y - \hat{y})^{1} \times (-1) \label{ref13} \tag{13} \\
-\frac{\partial \hat{y}}{\partial w_1} &= \big{(} \frac{1}{1 + e^{-[X] . [W]}} \big{)} \times \big{(}1- \frac{1}{1 + e^{-[X] . [W]}} \big{)} \times x_1 \dots & \text{using \eqref{ref102} & \eqref{ref103}} \label{ref14} \tag{14}\\
-& = \sigma ([X] . [W]) \times (1- \sigma ([X] . [W])) * x_1 \dots & \text{using \eqref{ref101}} & \label{ref15} \tag{15}\\
-& = \hat{y} \times (1- \hat{y}) \times x_1 \dots & \text{using \eqref{ref101}} & \label{ref16} \tag{16}\\
-\end{align}
-$$</p><br>
-
-<p>Substituting \eqref{ref13} & \eqref{ref16} in \eqref{ref12}, we get
-
-∂
-L
-∂
-w
-1
-=
-(
-(
-−
-1
-)
-×
-(
-y
-−
-y
-^
-)
-)
-×
-(
-y
-^
-×
-(
-1
-−
-y
-^
-)
-×
-x
-1
-)
-=
-−
-(
-y
-−
-y
-^
-)
-×
-y
-^
-×
-(
-1
-−
-y
-^
-)
-×
-x
-1
-=
-(
-y
-^
-−
-y
-)
-×
-y
-^
-×
-(
-1
-−
-y
-^
-)
-×
-x
-1
-
-Thus, in general: $$ \begin{align} \frac{\partial L}{\partial w_i} &= (\hat{y} - y) \times \hat{y} \times (1- \hat{y}) \times x_i \label{ref17} \tag{17}\ \end{align} $$
-
-Using \eqref{ref17} in \eqref{ref11}</p><br>
-
-<p>
+Let $\hat{y}$ be the predicted output. Then,
 $$
-\begin{equation}
-\frac{\partial L}{\partial W} = \begin{bmatrix}
-(\hat{y} - y) \times \hat{y} \times (1- \hat{y}) \times x_1 \\
-(\hat{y} - y) \times \hat{y} \times (1- \hat{y}) \times x_2 \\
-(\hat{y} - y) \times \hat{y} \times (1- \hat{y}) \times x_3 \\
-\end{bmatrix}
-\label{ref18} \tag{18}
-\end{equation}
-$$</p><br><br>
+\hat{y} = \\sigma(Wx) = \\frac{1}{1 + e^{-X \\cdot W}}
+$$
 
-<p>$$
-\begin{equation}
-= \begin{bmatrix}
-x^1 \\
-x^2 \\
-x^3 \\
-\end{bmatrix}
-* [(\hat{y} - y) \times \hat{y} \times (1- \hat{y})]
-\label{ref19} \tag{19}
-\end{equation}
-$$</p>
+Let loss be squared error loss. For ease of maths we take $\\frac{1}{2}$ of it.
+$$
+L = \\frac{1}{2}(y - \hat{y})^2
+$$
 
-<p>Let,
+Let's compute gradients, $\\nabla_W L = \\frac{\\partial L}{\\partial W}$
 
-\begin{align} \Delta l_{1} = (\hat{y} - y) \times \hat{y} \times (1- \hat{y}) \label{ref20} \tag{20} \ \end{align}
+### Gradient Calculation
 
-Using \eqref{ref20} in \eqref{ref19}
+$$
+\\frac{\\partial L}{\\partial W} = \\frac{\\partial L}{\\partial \hat{y}} \\cdot \\frac{\\partial \hat{y}}{\\partial W}
+$$
 
-∂
-L
-∂
-W
-=
-[
-X
-T
-]
-.
-Δ
-l
-1</p>
+Where:
+- $\\frac{\\partial L}{\\partial \hat{y}} = - (y - \hat{y})$
+- $\\frac{\\partial \hat{y}}{\\partial W} = \\hat{y}(1 - \\hat{y}) x$
 
-<a href="https://anujgupta82.github.io/2016/08/26/gradients-1/" class="btn btn-primary" style="color: blue;">Prev</a>
-<a href="https://anujgupta82.github.io/2016/08/26/gradients-3/" class="btn btn-primary" style="color: blue;">Next</a>
+So,
+$$
+\\frac{\\partial L}{\\partial W} = - (y - \hat{y}) \\cdot \\hat{y}(1 - \\hat{y}) x
+$$
 
-      `
+Or, equivalently,
+$$
+\\frac{\\partial L}{\\partial W} = (\\hat{y} - y) \\cdot \\hat{y}(1 - \\hat{y}) x
+$$
+
+---
+
+#### Derivative of Logistic Function
+
+The derivative of logistic function $\\sigma$ is:
+$$
+\\frac{d}{dx} \\sigma(x) = \\sigma(x)(1 - \\sigma(x))
+$$
+
+**Proof:**
+$$
+\\frac{d}{dx} \\sigma(x) = \\frac{d}{dx} \\left[ \\frac{1}{1 + e^{-x}} \\right] = \\frac{e^{-x}}{(1 + e^{-x})^2} = \\frac{1}{1 + e^{-x}} \\left(1 - \\frac{1}{1 + e^{-x}} \\right) = \\sigma(x)(1 - \\sigma(x))
+`  
+},
+    {
+      // ...existing code...
+
+  "id": 3,
+  "title": "Gradients - Part 2",
+  "date": "2016-08-29",
+  "image": "images/gradient-part2-diagram.jpg",
+  "content": `
+Continuing from Part 1, let's consider a neural network with 1 layer and 1 input node, but now generalize to vector/matrix notation.
+
+![Neural Net Diagram](images/gradient-part2-diagram.jpg)
+
+Suppose input $x$ is a vector and $W$ is a weight matrix. The predicted output is:
+$$
+\hat{y} = \\sigma(Wx)
+$$
+
+Let the loss be squared error:
+$$
+L = \\frac{1}{2} (y - \hat{y})^2
+$$
+
+### Gradient Calculation
+
+The gradient with respect to $W$ is:
+$$
+\\frac{\\partial L}{\\partial W} = (\\hat{y} - y) \\cdot \\hat{y}(1 - \\hat{y}) x^T
+$$
+
+#### Step-by-step:
+
+1. Compute $\\frac{\\partial L}{\\partial \hat{y}} = \\hat{y} - y$
+2. Compute $\\frac{\\partial \hat{y}}{\\partial W} = \\hat{y}(1 - \\hat{y}) x^T$
+3. Multiply to get the gradient.
+
+---
+
+#### Derivative of Logistic Function (Reminder)
+
+The derivative of logistic function $\\sigma$ is:
+$$
+\\frac{d}{dx} \\sigma(x) = \\sigma(x)(1 - \\sigma(x))
+$$
+
+**Proof:**
+$$
+\\frac{d}{dx} \\sigma(x) = \\frac{d}{dx} \\left[ \\frac{1}{1 + e^{-x}} \\right] = \\frac{e^{-x}}{(1 + e^{-x})^2} = \\frac{1}{1 + e^{-x}} \\left(1 - \\frac{1}{1 + e^{-x}} \\right) = \\sigma(x)(1 - \\sigma(x))
+$$
+`
+
     },
     {
       id: 4,
